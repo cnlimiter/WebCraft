@@ -9,7 +9,7 @@ import java.util.Arrays;
 import static cn.evolvefield.mods.webcraft.Constants.MOD_ID;
 
 
-public class CommonClass {
+public class CommonWebCraft {
     private static final String[] resourceArray = {"minecraft.ttf",
             "fzxs12.ttf", "minecraft.css", "button/button.png", "button/button_disabled.png",
             "button/button_hover.png"};

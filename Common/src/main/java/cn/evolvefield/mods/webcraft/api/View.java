@@ -13,9 +13,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
-
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,15 +22,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class View {
+public class View implements AutoCloseable {
     private Vec4i bounds;
     private final long viewPointer;
     private final boolean isTransparent;
     private IResizeCallback resizeCallback;
-    private double scale = 1.0f;
+    private final double scale = 1.0f;
     private final List<Runnable> domReadyCallbakList = new LinkedList<>();
     private final Map<String, IJSFuncCallback> jsCallbackMap = new HashMap<>();
-    private static JsonParser jsonParser = new JsonParser();
 
     public View() {
         this(0, 0, 100, 100);
@@ -42,10 +39,11 @@ public class View {
         this(new Vec4i(x, y, width, height), true);
     }
 
-    public void finalize() throws Throwable {
-        super.finalize();
+    @Override
+    public void close() throws Exception {
         destroyView(viewPointer);
     }
+
 
     /**
      * @param vec           一个表示坐标和长宽的向量
@@ -97,11 +95,13 @@ public class View {
         if (resizeCallback != null) setBounds(resizeCallback.onResize(vec));
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public View loadHTML(String html) {
         nloadHTML(viewPointer, html);
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public View loadHTML(ResourceLocation location) throws IOException {
         String path = "/assets/" + location.getNamespace() + "/web/" + location.getPath();
         FileUtils.upzipIfNeeded(path);
@@ -110,11 +110,13 @@ public class View {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public View loadURL(URL url) {
         loadURL(url.toString());
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public View loadURL(String url) {
         //System.out.println(url);
         nloadURL(viewPointer, url);
@@ -188,22 +190,30 @@ public class View {
 
     public String jsFuncCallback(String funcName, String jsonStr) {
         IJSFuncCallback callback = jsCallbackMap.get(funcName);
-        JsonElement obj = callback.callback(jsonParser.parse(jsonStr));
+        JsonElement obj = callback.callback(JsonParser.parseString(jsonStr));
         return obj == null ? null : obj.toString();
     }
 
+    /**
+     * 执行js
+     *
+     * @param js js代码
+     * @return 返回json
+     */
     public JsonElement evaluteJS(String js) {
         String result = evaluateScript(viewPointer, js);
         if (result == null) return null;
-        return jsonParser.parse(result);
+        return JsonParser.parseString(result);
     }
 
     public JsonElement evaluteJSFunc(String jsFuncName, JsonObject arg) {
         String js = jsFuncName + "(" + arg.toString() + ")";
         String result = evaluateScript(viewPointer, js);
         if (result == null) return null;
-        return jsonParser.parse(result);
+        return JsonParser.parseString(result);
     }
+
+
 
     /*public static void test(int x)
     {

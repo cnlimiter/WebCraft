@@ -66,7 +66,6 @@ public class Config {
                 f.createNewFile();
                 try (JsonWriter writer = new JsonWriter(new FileWriter(f, false))) {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    ;
                     gson.toJson(instance, Config.class, writer);
                 }
             } catch (IOException e) {

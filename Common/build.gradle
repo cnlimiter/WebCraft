@@ -101,20 +101,65 @@ processResources {
     }
 }
 
+sourcesJar {
+    archivesBaseName = "${mod_name}-common-${minecraft_version}"
+}
+
+task nativesJar(type: Jar, dependsOn: 'compileJava') {
+    if (System.getProperty("os.name").toLowerCase().contains('linux')) {
+        archiveClassifier.set('linux')
+        from "${buildDir}/libs/webcraft_core/shared"
+    } else if (System.getProperty("os.name").toLowerCase().contains("win")) {
+        archiveClassifier.set('win')
+        from("${buildDir}/libs/webcraft_core/shared") {
+            include '*.dll'
+        }
+    } else {
+        archiveClassifier.set('mac')
+        from "${buildDir}/libs/webcraft_core/shared"
+    }
+}
+
+compileJava.dependsOn('webcraft_coreSharedLibrary')
+
+compileJava.doLast {
+    copy {
+        if (System.getProperty("os.name").toLowerCase().contains('linux')) {
+            from "${project.projectDir}/cpplibs/linux"
+        } else if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            from("${project.projectDir}/cpplibs/win") {
+                exclude '*.lib'
+            }
+        } else {
+            from "${project.projectDir}/cpplibs/mac"
+        }
+        into "${buildDir}/libs/webcraft_core/shared"
+    }
+}
+
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-            from components.java
+        WebCraft(MavenPublication) {
+            groupId = "${project.group}.${project.mod_name}"
+            artifactId = "${project.mod_name}-Natives"
+            version = "${project.version}"
+
+            artifact nativesJar
         }
     }
 
     repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
+
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
+            }
         }
     }
 }

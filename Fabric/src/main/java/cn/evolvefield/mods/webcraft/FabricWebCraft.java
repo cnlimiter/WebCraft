@@ -8,6 +8,6 @@ public class FabricWebCraft implements ModInitializer {
     public void onInitialize() {
 
 
-        CommonClass.init();
+        CommonWebCraft.init();
     }
 }

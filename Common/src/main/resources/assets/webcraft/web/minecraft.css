@@ -1,0 +1,55 @@
+@font-face {
+    font-family: 'mc';
+    src: url('file:///mods/webcraft/assets/webcraft/web/minecraft.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'fzxs12';
+    src: url('file:///mods/webcraft/assets/webcraft/web/fzxs12.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'mc', 'fzxs12';
+    color: #fff;
+    font-size: 18px;
+}
+
+button {
+    font-family: 'mc', 'fzxs12';
+    color: #fff;
+    font-size: 18px;
+    background: url('file:///mods/webcraft/assets/webcraft/web/button/button.png');
+    background-size: 100% 100%;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    float: left;
+    border-radius: 0px;
+    padding-top: 2px;
+    padding-bottom: 33px;
+}
+
+button:hover {
+    background: url('file:///mods/webcraft/assets/webcraft/web/button/button_hover.png');
+    background-size: 100% 100%;
+    background-blend-mode: color;
+    border: none;
+    color: #fff;
+}
+
+button:disabled {
+    background: url('file:///mods/webcraft/assets/webcraft/web/button/button_disabled.png');
+    background-size: 100% 100%;
+    color: #aaa;
+}
+
+button:active {
+    background: url('file:///mods/webcraft/assets/webcraft/web/button/button_disabled.png');
+    background-size: 100% 100%;
+    border: none;
+    color: #aaa;
+}

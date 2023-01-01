@@ -15,7 +15,7 @@ String* jstringToUltralightString(JNIEnv* env_, jstring& str)
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_cn_evolvefield_mods_webcraft_client_ClientEventListener_setNativeConfig(JNIEnv* env_, jclass clazz, jstring font_family_standard, jstring font_family_fixed, jstring font_family_serif, jstring font_family_sans_serif, jstring user_agent)
+Java_cn_evolvefield_mods_webcraft_client_NativeLibEvent_setNativeConfig(JNIEnv* env_, jclass clazz, jstring font_family_standard, jstring font_family_fixed, jstring font_family_serif, jstring font_family_sans_serif, jstring user_agent)
 {
     Config* config = new Config();
     config->font_family_standard = jstringToUltralightString(env_,font_family_standard)->utf16();
@@ -29,7 +29,7 @@ Java_cn_evolvefield_mods_webcraft_client_ClientEventListener_setNativeConfig(JNI
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_cn_evolvefield_mods_webcraft_client_ClientEventListener_nativeInit(JNIEnv* env_, jclass clazz, jlong pointer, jlong pointer2, jlong config)
+Java_cn_evolvefield_mods_webcraft_client_NativeLibEvent_nativeInit(JNIEnv* env_, jclass clazz, jlong pointer, jlong pointer2, jlong config)
 {
     set_glfwGetTime_address((void*)pointer2);
     Platform::instance().set_file_system(new FileSystemBasic(""));

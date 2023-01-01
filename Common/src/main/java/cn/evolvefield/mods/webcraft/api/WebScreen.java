@@ -3,12 +3,9 @@ package cn.evolvefield.mods.webcraft.api;
 import cn.evolvefield.mods.webcraft.api.math.Vec2i;
 import cn.evolvefield.mods.webcraft.api.math.Vec4i;
 import cn.evolvefield.mods.webcraft.client.KeyboardHelper;
-import com.ibm.icu.impl.Assert;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.apache.http.util.Asserts;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedList;
@@ -73,7 +70,7 @@ public class WebScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        viewList.forEach(view -> view.disable());
+        viewList.forEach(View::disable);
         WebRenderer.INSTANCE.purgeMemory();
     }
 
@@ -155,8 +152,8 @@ public class WebScreen extends Screen {
         stack.popPose();
     }
 
-    //double lastTime = 0.0;
-    //int fpsSum = 0;
+    double lastTime = 0.0;
+    int fpsSum = 0;
 
     @Override
     public void render(PoseStack stack, int mX, int mY, float pTicks) {
@@ -167,23 +164,22 @@ public class WebScreen extends Screen {
         stack.scale((float) (1.0 / scale), (float) (1.0 / scale), (float) (1.0 / scale));
 
         WebRenderer.INSTANCE.offscreenRender();
-        //renderBackground();
+        //renderBackground(stack);
 
-        rendererList1.forEach(renderer -> renderer.render(mouseX, mouseY, pTicks));
-        viewList.forEach(view -> view.draw());
-        rendererList2.forEach(renderer -> renderer.render(mouseX, mouseY, pTicks));
+        rendererList1.forEach(renderer -> renderer.render(stack, mouseX, mouseY, pTicks));
+        viewList.forEach(View::draw);
+        rendererList2.forEach(renderer -> renderer.render(stack, mouseX, mouseY, pTicks));
 
-        //fpsSum++;
-        //double time = GLFW.glfwGetTime();
-        /*if (time - lastTime > 1.0)
-        {
+        fpsSum++;
+        double time = GLFW.glfwGetTime();
+        if (time - lastTime > 1.0) {
             //System.out.printf("FPS = %.1f\n", 1.0 * fpsSum / (time - lastTime));
             int a = (int) (1.0 * fpsSum / (time - lastTime) * 10 + 0.5);
-            GLFW.glfwSetWindowTitle(minecraft.getMainWindow().getHandle(),
-                    "Minecraft 1.15.2 FPS: " + a / 10 + "." + a % 10);
+            GLFW.glfwSetWindowTitle(minecraft.getWindow().getWindow(),
+                    "Minecraft 1.19.X FPS: " + a / 10 + "." + a % 10);
             lastTime = time;
             fpsSum = 0;
-        }*/
+        }
 
         stack.popPose();
     }

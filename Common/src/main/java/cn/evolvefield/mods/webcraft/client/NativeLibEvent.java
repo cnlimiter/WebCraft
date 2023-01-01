@@ -14,22 +14,21 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.function.Consumer;
 import java.util.zip.ZipFile;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientEventListener {
-    private static String MAVEN_URL = "https://maven.qwq.cafe/";
-    private static String libPath;
+public class NativeLibEvent {
+    private static String MAVEN_URL = "https://maven.nova-committee.cn/releases/";
+    private static final String libPath;
 
     static {
         if (Constants.RUNTIME_OS == Constants.OS.WINDOWS)
-            MAVEN_URL = "https://ci.qwq.cafe/maven/";
+            MAVEN_URL = "https://maven.nova-committee.cn/releases/";
 
         if (!Constants.VERSION.equals("NONE") && !Constants.VERSION.equals("NULL")) {
             libPath = "mods/webcraft/natives-" + Constants.VERSION + "/";
             if (!checkNatives()) downloadNatives();
-        } else libPath = System.getProperty("cafe.qwq.webcraft.nativesPath");
+        } else libPath = System.getProperty("cn.evolvefield.mods.webcraft.nativesPath");
 
         if (Constants.RUNTIME_OS == Constants.OS.WINDOWS) {
             loadLibrary("UltralightCore");
@@ -41,18 +40,11 @@ public class ClientEventListener {
     }
 
     private static String getNativePath(String name) {
-        String name1;
-        switch (Constants.RUNTIME_OS) {
-            case WINDOWS:
-                name1 = name + ".dll";
-                break;
-            case LINUX:
-                name1 = "lib" + name + ".so";
-                break;
-            default:
-                name1 = "lib" + name + ".dylib";
-                break;
-        }
+        String name1 = switch (Constants.RUNTIME_OS) {
+            case WINDOWS -> name + ".dll";
+            case LINUX -> "lib" + name + ".so";
+            default -> "lib" + name + ".dylib";
+        };
         return libPath + name1;
     }
 
@@ -70,26 +62,18 @@ public class ClientEventListener {
         if (!f1.exists() || !f1.isFile()) return false;
 
         f1 = new File(getNativePath("webcraft_core"));
-        if (!f1.exists() || !f1.isFile()) return false;
-
-        return true;
+        return f1.exists() && f1.isFile();
     }
 
     private static void downloadNatives() {
-        String fileName = "webcraft-" + Constants.VERSION + "-natives";
+        String fileName = "WebCraft-Natives-" + Constants.VERSION;
         switch (Constants.RUNTIME_OS) {
-            case WINDOWS:
-                fileName += "-win.jar";
-                break;
-            case LINUX:
-                fileName += "-linux.jar";
-                break;
-            default:
-                fileName += "-mac.jar";//虽然并没有MAC版本
-                break;
+            case WINDOWS -> fileName += "-win.jar";
+            case LINUX -> fileName += "-linux.jar";
+            default -> fileName += "-mac.jar";//虽然并没有MAC版本
         }
 
-        String urlstr = MAVEN_URL + "cafe/qwq/webcraft/" + Constants.VERSION + "/" + fileName;
+        String urlstr = MAVEN_URL + "cn/evolvefield/mods/WebCraft/WebCraft-Natives/" + Constants.VERSION + "/" + fileName;
         try {
             URL url = new URL(urlstr);
             File outputFile = new File("mods/webcraft/" + fileName);
@@ -116,7 +100,7 @@ public class ClientEventListener {
                 frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
                 panel.setBackground(Color.WHITE);
-                JLabel label = new JLabel("Downloading " + fileName + "...");
+                JLabel label = new JLabel("Download " + fileName + "...");
                 label.setFont(new Font("Arial", Font.PLAIN, 16));
                 panel.add(label);
                 JProgressBar bar = new JProgressBar();
@@ -163,10 +147,6 @@ public class ClientEventListener {
         System.load(f.getAbsolutePath());
     }
 
-
-    public static void onClientSetup() {
-
-    }
 
     public static void onGuiOpen() {
         Constants.LOGGER.info("Start loading Ultralight...");
