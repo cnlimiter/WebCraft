@@ -1,0 +1,35 @@
+#include <jni.h>
+#include <Ultralight/Ultralight.h>
+#include "glad/glad.h"
+
+using namespace ultralight;
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_cn_evolvefield_mods_webcraft_api_WebRenderer_createRenderer(JNIEnv* env_, jclass clazz)
+{
+    return (jlong)(new RefPtr<Renderer>(Renderer::Create()));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_cn_evolvefield_mods_webcraft_api_WebRenderer_npurgeMemory(JNIEnv* env_, jobject obj, jlong pointer)
+{
+    ((RefPtr<Renderer>*)pointer)->get()->PurgeMemory();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_cn_evolvefield_mods_webcraft_api_WebRenderer_render(JNIEnv* env_, jobject obj, jlong pointer)
+{
+    //glClearColor(0.0,0.0,0.0,0.0);
+    //glClearDepth(1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ((RefPtr<Renderer>*)pointer)->get()->Render();
+    GPUDriver* gpu_driver=Platform::instance().gpu_driver();
+    if (gpu_driver->HasCommandsPending())
+    {
+        gpu_driver->DrawCommandList();
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}

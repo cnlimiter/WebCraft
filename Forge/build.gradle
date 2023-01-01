@@ -3,13 +3,19 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
+configurations {
+    library
+    implementation.extendsFrom library
+}
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
-    
+
     if (project.hasProperty('forge_ats_enabled') && project.findProperty('forge_ats_enabled').toBoolean()) {
         // This location is hardcoded in Forge and can not be changed.
         // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
@@ -63,6 +69,20 @@ minecraft {
     }
 }
 
+if (file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+    mixin {
+        add sourceSets.main, "${mod_id}.refmap.json"
+        config "${mod_id}.mixins.json"
+    }
+}
+
+minecraft.runs.configureEach {
+    lazyToken('minecraft_classpath') {
+        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+    }
+}
+
+
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
@@ -70,10 +90,9 @@ dependencies {
     compileOnly project(":Common")
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(":Common").sourceSets.main.allSource)
 }
-
 processResources {
     from project(":Common").sourceSets.main.resources
 }

@@ -1,16 +1,21 @@
+import org.gradle.internal.jvm.Jvm
+
 plugins {
     id 'java'
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
     id 'maven-publish'
 }
 
+apply plugin: 'eclipse'
+apply plugin: 'cpp'
+
 archivesBaseName = "${mod_name}-common-${minecraft_version}"
 
 minecraft {
     version(minecraft_version)
-    runs {   
+    runs {
         if (project.hasProperty('common_runs_enabled') ? project.findProperty('common_runs_enabled').toBoolean() : true) {
-        
+
             server(project.hasProperty('common_server_run_name') ? project.findProperty('common_server_run_name') : 'vanilla_server') {
                 workingDirectory(this.file("run"))
             }
@@ -21,9 +26,69 @@ minecraft {
     }
 }
 
+model {
+    platforms {
+        x64 {
+            architecture 'x64'
+        }
+    }
+    components {
+        webcraft_core(NativeLibrarySpec) {
+            targetPlatform "x64"
+            binaries.all {
+                if (targetPlatform.operatingSystem.macOsX) {
+                    cppCompiler.args '-O2'
+                    cppCompiler.args '-std=c++11'
+                    cppCompiler.args '-I', "${project.projectDir}/cpplibs/include"
+                    cppCompiler.args '-I', "${Jvm.current().javaHome}/include"
+                    cppCompiler.args '-I', "${Jvm.current().javaHome}/include/darwin"
+                    linker.args '-Wl,-rpath,@loader_path'
+                    linker.args "-L${project.projectDir}/cpplibs/mac"
+                    linker.args '-lWebCore'
+                    linker.args '-lUltralightCore'
+                    linker.args '-lUltralight'
+                } else if (targetPlatform.operatingSystem.linux) {
+                    cppCompiler.args '-O2'
+                    cppCompiler.args '-std=c++11'
+                    cppCompiler.args '-I', "${project.projectDir}/cpplibs/include"
+                    cppCompiler.args '-I', "${Jvm.current().javaHome}/include"
+                    cppCompiler.args '-I', "${Jvm.current().javaHome}/include/linux"
+                    cppCompiler.args '-D_FILE_OFFSET_BITS=64'
+                    linker.args '-Wl,-rpath=$ORIGIN'
+                    linker.args "-L${project.projectDir}/cpplibs/linux"
+                    linker.args '-lWebCore'
+                    linker.args '-lUltralightCore'
+                    linker.args '-lUltralight'
+                } else if (targetPlatform.operatingSystem.windows) {//Use MSVC to compile
+                    cppCompiler.args '/O2'
+                    cppCompiler.args '/LD', '/MD'
+                    cppCompiler.args '/std:c++14'
+                    cppCompiler.args "/I${project.projectDir}/cpplibs/include"
+                    cppCompiler.args "/I${Jvm.current().javaHome}/include"
+                    cppCompiler.args "/I${Jvm.current().javaHome}/include/win32"
+                    cppCompiler.args '/EHsc', '/GS-', '/fp:fast'
+                    linker.args '/MANIFEST', '/MACHINE:x64'
+                    linker.args '/DYNAMICBASE'
+                    linker.args "${project.projectDir}/cpplibs/win/Ultralight.lib"
+                    linker.args "${project.projectDir}/cpplibs/win/UltralightCore.lib"
+                    linker.args "${project.projectDir}/cpplibs/win/WebCore.lib"
+                }
+            }
+            sources {
+                cpp {
+                    source {
+                        srcDirs "src/main/cpp"
+                        include "**/*.cpp", "**/*.h", "**/*.c"
+                    }
+                }
+            }
+        }
+    }
+}
+
 dependencies {
-     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
-     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 }
 
 processResources {
@@ -35,6 +100,7 @@ processResources {
         expand buildProps
     }
 }
+
 
 publishing {
     publications {
