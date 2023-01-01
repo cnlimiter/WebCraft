@@ -17,7 +17,7 @@
   "environment": "*",
     "entrypoints": {
       "main": [
-        "cn.evolvefield.mods.webcraft.ExampleMod"
+        "cn.evolvefield.mods.webcraft.FabricWebCraft"
       ]
     },
     "mixins": [
