@@ -163,8 +163,8 @@ public class WebScreen extends Screen {
         stack.pushPose();
         stack.scale((float) (1.0 / scale), (float) (1.0 / scale), (float) (1.0 / scale));
 
-        WebRenderer.INSTANCE.offscreenRender();
-        //renderBackground(stack);
+        //WebRenderer.INSTANCE.offscreenRender();
+        renderBackground(stack);
 
         rendererList1.forEach(renderer -> renderer.render(stack, mouseX, mouseY, pTicks));
         viewList.forEach(View::draw);

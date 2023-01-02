@@ -2,8 +2,10 @@ package cn.evolvefield.mods.webcraft.api;
 
 import cn.evolvefield.mods.webcraft.client.UltralightWindow;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL33;
 
 import java.nio.IntBuffer;
 
@@ -52,16 +54,16 @@ public class WebRenderer {
      */
     public void offscreenRender() {
         IntBuffer id = BufferUtils.createIntBuffer(1);
-        GL20.glGetIntegerv(GL20.GL_CURRENT_PROGRAM, id);
+        GL33.glGetIntegerv(GL20.GL_CURRENT_PROGRAM, id);
         UltralightWindow.getInstance().makeCurrent();
-        GL32.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        //GL32.glDisable(GL32.GL_LIGHTING);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GL33.glDisable(GL33.GL_LIGHTING);
         logicUpdate();
         render(rendererPointer);
-        GL32.glBindTexture(GL32.GL_TEXTURE_2D, 0);
-        GL32.glFinish();
+        GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
+        GL33.glFinish();
         UltralightWindow.getInstance().unmakeCurrent();
-        GL20.glUseProgram(id.get());
+        GL33.glUseProgram(id.get());
     }
 
     private static native long createRenderer();

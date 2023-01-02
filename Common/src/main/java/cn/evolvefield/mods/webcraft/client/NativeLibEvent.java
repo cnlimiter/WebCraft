@@ -3,8 +3,6 @@ package cn.evolvefield.mods.webcraft.client;
 import cn.evolvefield.mods.webcraft.Config;
 import cn.evolvefield.mods.webcraft.Constants;
 import cn.evolvefield.mods.webcraft.util.FileUtils;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 import javax.swing.*;
@@ -16,7 +14,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.zip.ZipFile;
 
-@OnlyIn(Dist.CLIENT)
 public class NativeLibEvent {
     private static String MAVEN_URL = "https://maven.nova-committee.cn/releases/";
     private static final String libPath;

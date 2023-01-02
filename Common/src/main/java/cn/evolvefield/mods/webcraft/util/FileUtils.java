@@ -48,19 +48,26 @@ public class FileUtils {
     }
 
     public static void upzipIfNeeded(String resourcePath) throws IOException {
+        upzipIfNeeded(FileUtils.class, resourcePath);
+    }
+
+    public static void upzipIfNeeded(Class<?> c, String resourcePath) throws IOException {
         if (unzipSet.contains(resourcePath)) return;
 
         File ouputFile = new File("mods/webcraft" + resourcePath);
         if (!ouputFile.getParentFile().exists()) ouputFile.getParentFile().mkdirs();
 
-        InputStream input = FileUtils.class.getResourceAsStream(resourcePath);
-        OutputStream output = new FileOutputStream(ouputFile);
+        InputStream input = c.getResourceAsStream(resourcePath);
+        try (OutputStream output = new FileOutputStream(ouputFile)) {
 
-        int length;
-        byte[] bytes = new byte[1024];
+            int length;
+            byte[] bytes = new byte[1024];
 
-        while ((length = input.read(bytes)) != -1) {
-            output.write(bytes, 0, length);
+            if (input != null) {
+                while ((length = input.read(bytes)) != -1) {
+                    output.write(bytes, 0, length);
+                }
+            }
         }
     }
 

@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,25 +15,18 @@ public class Config {
     private static Config instance;
     private static final String CONFIG_FILE_PATH = "mods/webcraft/config.json";
 
-    @OnlyIn(Dist.CLIENT)
     public boolean downloadNativesSilently = false;
 
-    @OnlyIn(Dist.CLIENT)
     public String fontFamilyStandard;
 
-    @OnlyIn(Dist.CLIENT)
     public String fontFamilyFixed;
 
-    @OnlyIn(Dist.CLIENT)
     public String fontFamilySerif;
 
-    @OnlyIn(Dist.CLIENT)
     public String fontFamilySansSerif;
 
-    @OnlyIn(Dist.CLIENT)
     public String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/602.1 (KHTML, like Gecko) Ultralight/1.1.0 Safari/602.1";
 
-    @OnlyIn(Dist.CLIENT)
     public Config() {
         if (Constants.RUNTIME_OS == Constants.OS.WINDOWS) {
             fontFamilyStandard = "Microsoft Yahei";
