@@ -8,10 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -21,6 +18,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static com.mojang.blaze3d.shaders.ProgramManager.glUseProgram;
 
 public class View implements AutoCloseable {
     private Vec4i bounds;
@@ -111,6 +110,15 @@ public class View implements AutoCloseable {
     }
 
     @SuppressWarnings("UnusedReturnValue")
+    public View loadHTML(Class<?> c, ResourceLocation location) throws IOException {
+        String path = "/assets/" + location.getNamespace() + "/web/" + location.getPath();
+        FileUtils.upzipIfNeeded(c, path);
+        String url = "file:///" + "mods/webcraft" + path;
+        loadURL(url);
+        return this;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
     public View loadURL(URL url) {
         loadURL(url.toString());
         return this;
@@ -132,19 +140,17 @@ public class View implements AutoCloseable {
         float t = getRTTTop(rtt), b = getRTTBottom(rtt), l = getRTTLeft(rtt), r = getRTTRight(rtt);
         //int pID = WCShaders.getSRGBToLinearProgramID();
         //glUseProgram(pID);
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
         RenderSystem.setShaderTexture(0, textureID);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.vertex(bounds.x, bounds.y, 0.0).uv(l, t).endVertex();
         bufferbuilder.vertex(bounds.x + bounds.w, bounds.y, 0.0).uv(r, t).endVertex();
         bufferbuilder.vertex(bounds.x + bounds.w, bounds.y + bounds.h, 0.0).uv(r, b).endVertex();
         bufferbuilder.vertex(bounds.x, bounds.y + bounds.h, 0.0).uv(l, b).endVertex();
-        tessellator.end();
-        RenderSystem.disableBlend();
+        BufferUploader.drawWithShader(bufferbuilder.end());
         destroyRTT(rtt);
     }
 

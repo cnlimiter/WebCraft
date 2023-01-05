@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.LinkedList;
 import java.util.List;
 
-public class WebScreen extends Screen {
+public abstract class WebScreen extends Screen {
     private List<View> viewList;
     private boolean shouldCloseOnEsc;
     private List<IRenderer> rendererList1;
@@ -146,10 +146,15 @@ public class WebScreen extends Screen {
         stack.scale((float) scale, (float) scale, (float) scale);
         if (this.minecraft.level != null) {
             this.fillGradient(stack, 0, 0, this.width, this.height, -1072689136, -804253680);
+            setEventCallBack(stack);
         } else {
             this.renderDirtBackground(p_renderBackground_1_);
         }
         stack.popPose();
+    }
+
+    public void setEventCallBack(PoseStack stack) {
+
     }
 
     double lastTime = 0.0;
@@ -163,8 +168,8 @@ public class WebScreen extends Screen {
         stack.pushPose();
         stack.scale((float) (1.0 / scale), (float) (1.0 / scale), (float) (1.0 / scale));
 
-        //WebRenderer.INSTANCE.offscreenRender();
-        renderBackground(stack);
+        WebRenderer.INSTANCE.offscreenRender();
+        //renderBackground(stack);
 
         rendererList1.forEach(renderer -> renderer.render(stack, mouseX, mouseY, pTicks));
         viewList.forEach(View::draw);

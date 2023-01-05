@@ -7,8 +7,8 @@ import static org.lwjgl.glfw.GLFW.*;
 public class UltralightWindow {
     private static UltralightWindow instance;
 
-    private long ulWindowHandle;
-    private long mainWindowHandle;
+    private final long ulWindowHandle;
+    private final long mainWindowHandle;
 
     private UltralightWindow() {
         mainWindowHandle = Minecraft.getInstance().getWindow().getWindow();
