@@ -202,7 +202,7 @@ public class UltralightEngine {
     }
 
     public View newScreenView(Screen screen){
-        return  newScreenView(screen, mc.screen);
+        return newScreenView(screen, mc.screen);
     }
 
     public void removeView(View view) {

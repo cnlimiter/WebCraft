@@ -26,7 +26,7 @@ public class MixinWindow {
     }
 
     /**
-     * Hook window resize
+     * Hook window focus
      */
     @Inject(method = "onFocus", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/platform/Window;eventHandler:Lcom/mojang/blaze3d/platform/WindowEventHandler;"))
     public void hookFocus(long window, boolean focused, CallbackInfo callbackInfo) {

@@ -31,7 +31,7 @@ public class WebcraftClient implements ClientModInitializer {
             dispatcher.register(
                     ClientCommandManager.literal("testscreen").executes(context -> {
                         Constants.LOG.info(Page.of("webcraft/funny").toString());
-                        GuiHandler.displayGui(new WebCraftScreen(Page.of("webcraft/funny")));
+                        GuiHandler.displayGui(new WebScreen(Page.of("webcraft/funny")));
                         return Command.SINGLE_SUCCESS;
                     })
 

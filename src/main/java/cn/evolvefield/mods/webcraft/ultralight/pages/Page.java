@@ -16,7 +16,7 @@ import java.nio.file.WatchService;
  */
 public class Page {
     public String name;
-    public static String viewableFile;
+    public String viewableFile;
     boolean exists;
     private final WatchService watcher;
     public Page(@NotNull String name) {
@@ -26,7 +26,7 @@ public class Page {
         exists = pageFolder.exists();
 
         var path = pageFolder.toPath();
-        WatchService watchService = null;
+        WatchService watchService;
         try {
             watchService = path.getFileSystem().newWatchService();
             path.register(watchService,

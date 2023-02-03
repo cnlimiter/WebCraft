@@ -5,6 +5,7 @@ import cn.evolvefield.mods.webcraft.ultralight.UltralightEngine;
 import cn.evolvefield.mods.webcraft.ultralight.glfw.RenderLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Overlay;
+import net.minecraft.client.gui.screens.Screen;
 
 /**
  * Project: WebCraft-1.19.3
@@ -21,13 +22,13 @@ public class UltralightIntegrationHook implements EventListener {
     }
 
     @Override
-    public void onScreenRender(PoseStack matrices) {
-        UltralightEngine.ENGINE.render(RenderLayer.SCREEN_LAYER, matrices);
+    public void onScreenRender(Screen screen, PoseStack stack, int mouseX, int mouseY, float partialTick) {
+        UltralightEngine.ENGINE.render(RenderLayer.SCREEN_LAYER, stack);
     }
 
     @Override
-    public void onRenderOverlay(PoseStack matrices, float tickDelta) {
-        UltralightEngine.ENGINE.render(RenderLayer.OVERLAY_LAYER, matrices);
+    public void onRenderOverlay(PoseStack stack, float partialTick) {
+        UltralightEngine.ENGINE.render(RenderLayer.OVERLAY_LAYER, stack);
 
     }
 

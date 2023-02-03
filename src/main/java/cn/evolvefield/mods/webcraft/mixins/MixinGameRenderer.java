@@ -20,8 +20,8 @@ public class MixinGameRenderer {
     }
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V"))
-    public void onScreenRender(Screen instance, PoseStack stack, int mouseX, int mouseY, float partialTick) {
-        instance.render(stack, mouseX, mouseY, partialTick);
-        EventManager.eventBus.postConsumer((listener) -> listener.onScreenRender(stack));
+    public void onScreenRender(Screen screen, PoseStack stack, int mouseX, int mouseY, float partialTick) {
+        screen.render(stack, mouseX, mouseY, partialTick);
+        EventManager.eventBus.postConsumer((listener) -> listener.onScreenRender(screen, stack, mouseX, mouseY, partialTick));
     }
 }

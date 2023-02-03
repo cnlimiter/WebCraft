@@ -91,7 +91,6 @@ public class ViewLoadListener implements UltralightLoadListener {
         try (JavascriptContextLock lock = view.ultralightView.get().lockJavascriptContext()){
             var context = lock.getContext();
             view.context.setupContext(view, context);
-
         }
 
     }

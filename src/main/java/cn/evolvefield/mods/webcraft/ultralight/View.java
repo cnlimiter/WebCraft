@@ -30,11 +30,8 @@ public class View {
     public RenderLayer renderLayer;
     private final ViewRenderer viewRenderer;
     public ThreadLock<UltralightView> ultralightView = new ThreadLock<UltralightView>();
-
     public UltralightJsContext context;
-
     Page viewingPage = null;
-
     private long jsGarbageCollected = 0L;
 
 
@@ -97,7 +94,7 @@ public class View {
         // Check if page has new update
         var page = viewingPage;
 
-        if (page != null && page.hasUpdate() == true) {
+        if (page != null && page.hasUpdate()) {
             loadPage(page);
         }
 
@@ -128,8 +125,10 @@ public class View {
             jsGarbageCollected = System.currentTimeMillis();
         } else if (System.currentTimeMillis() - jsGarbageCollected > 1000) {
             Constants.logger.debug("Garbage collecting Ultralight Javascript...");
-            ultralightView.get().lockJavascriptContext().getContext().garbageCollect();
-            jsGarbageCollected = System.currentTimeMillis();
+            try (var JSContext = ultralightView.get().lockJavascriptContext()) {
+                JSContext.getContext().garbageCollect();
+                jsGarbageCollected = System.currentTimeMillis();
+            }
         }
     }
 
