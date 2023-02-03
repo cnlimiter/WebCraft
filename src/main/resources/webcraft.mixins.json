@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "cn.evolvefield.mods.webcraft.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "MixinGameRenderer",
+    "MixinInGameHud",
+    "MixinKeyboard",
+    "MixinMinecraftClient",
+    "MixinMouse",
+    "MixinWindow"
+  ]
+}

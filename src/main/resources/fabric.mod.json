@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "webcraft",
+  "version": "${version}",
+  "name": "Webcraft",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/webcraft/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "cn.evolvefield.mods.webcraft.client.WebcraftClient"
+    ],
+    "main": [
+      "cn.evolvefield.mods.webcraft.Webcraft"
+    ]
+  },
+  "mixins": [
+    "webcraft.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "*"
+  }
+}
