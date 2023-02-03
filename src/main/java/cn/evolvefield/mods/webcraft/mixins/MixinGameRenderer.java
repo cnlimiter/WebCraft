@@ -1,11 +1,10 @@
 package cn.evolvefield.mods.webcraft.mixins;
 
 
-
-import cn.evolvefield.mods.webcraft.eventhub.EventManager;
 import cn.evolvefield.mods.webcraft.eventhub.EventListener;
+import cn.evolvefield.mods.webcraft.eventhub.EventManager;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.Overlay;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,9 +19,9 @@ public class MixinGameRenderer {
         EventManager.eventBus.postConsumer(EventListener::onGameRender);
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Overlay;render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V"))
-    public void onScreenRender(Overlay screen, PoseStack stack, int mouseX, int mouseY, float delta) {
-        screen.render(stack, mouseX, mouseY, delta);
-        EventManager.eventBus.postConsumer((listener) -> listener.onScreenRender(screen, stack, mouseX, mouseY, delta));
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltip(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V"))
+    public void onScreenRender(Screen instance, PoseStack stack, int mouseX, int mouseY, float partialTick) {
+        instance.render(stack, mouseX, mouseY, partialTick);
+        EventManager.eventBus.postConsumer((listener) -> listener.onScreenRender(stack));
     }
 }

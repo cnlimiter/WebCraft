@@ -43,7 +43,8 @@ public class CpuViewRenderer implements ViewRenderer {
 
         // Prepare OpenGL for 2D textures and bind our texture
         RenderSystem.enableTexture();
-        RenderSystem.bindTexture(glTexture);
+        RenderSystem.activeTexture(33984);
+        RenderSystem.bindTextureForSetup(glTexture);
 
         var dirtyBounds = surface.dirtyBounds();
 
@@ -122,8 +123,7 @@ public class CpuViewRenderer implements ViewRenderer {
                 .color(255, 255, 255, 255)
                 .endVertex();
 
-        BufferUploader.drawWithShader(bufferBuilder.end());
-        //tesselator.end();
+        tesselator.end();
         RenderSystem.disableBlend();
 
     }

@@ -11,6 +11,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Project: WebCraft-1.19.3
@@ -46,7 +48,7 @@ public class PageManager implements EventListener {
                     Constants.logger.info("Registering ultralight mod: {}", mod.getMetadata().getId());
                     var targetDir = new File(guisFolder, mod.getMetadata().getId()).toPath();
                     Files.createDirectories(targetDir);
-                    Files.walkFileTree(path.get(), new CopyDirVisitor(path.get(), targetDir));
+                    Files.copy(path.get(), targetDir, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
         } catch (IOException e) {
@@ -65,6 +67,6 @@ public class PageManager implements EventListener {
 
     @Override
     public void onClose() {
-        cleanup();
+        //cleanup();
     }
 }

@@ -16,7 +16,7 @@ public interface EventListener {
 
     ;
 
-    default void onScreenRender(Overlay screen, PoseStack matrices, int mouseX, int mouseY, float delta) {
+    default void onScreenRender(PoseStack matrices) {
     }
 
     ;

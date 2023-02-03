@@ -51,7 +51,7 @@ public class View {
         // Make sure renderer setups config correctly
         viewRenderer.setupConfig(viewConfig);
 
-        ultralightView.lock(UltralightEngine.renderer.get().createView(width, height, viewConfig));
+        ultralightView.lock(UltralightEngine.ENGINE.renderer.get().createView(width, height, viewConfig));
         ultralightView.get().setViewListener(new ViewListener());
         ultralightView.get().setLoadListener(new ViewLoadListener(this));
 

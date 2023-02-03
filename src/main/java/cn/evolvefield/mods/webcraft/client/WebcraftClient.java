@@ -4,13 +4,11 @@ import cn.evolvefield.mods.webcraft.Constants;
 import cn.evolvefield.mods.webcraft.ultralight.pages.Page;
 import cn.evolvefield.mods.webcraft.util.GuiHandler;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 /**
@@ -33,7 +31,7 @@ public class WebcraftClient implements ClientModInitializer {
             dispatcher.register(
                     ClientCommandManager.literal("testscreen").executes(context -> {
                         Constants.LOG.info(Page.of("webcraft/funny").toString());
-                        GuiHandler.displayGui(new UltralightScreen(Page.of("webcraft/funny")));
+                        GuiHandler.displayGui(new WebCraftScreen(Page.of("webcraft/funny")));
                         return Command.SINGLE_SUCCESS;
                     })
 

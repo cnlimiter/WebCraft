@@ -18,6 +18,9 @@ import com.labymedia.ultralight.plugin.view.UltralightViewListener;
  * Description:
  */
 public class ViewListener implements UltralightViewListener {
+
+
+
     /**
      * Called when the page title changes.
      *

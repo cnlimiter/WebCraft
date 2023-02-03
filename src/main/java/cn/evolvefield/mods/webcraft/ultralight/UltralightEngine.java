@@ -53,12 +53,12 @@ public class UltralightEngine {
      * Ultralight platform and renderer
      */
     ThreadLock<UltralightPlatform> platform = new ThreadLock<>();
-    static ThreadLock<UltralightRenderer> renderer = new ThreadLock<>();
+    ThreadLock<UltralightRenderer> renderer = new ThreadLock<>();
 
     /**
      * Glfw
      */
-    static GlfwClipboardAdapter clipboardAdapter;
+    public GlfwClipboardAdapter clipboardAdapter;
     public GlfwCursorAdapter cursorAdapter;
     public GlfwInputAdapter inputAdapter;
 
@@ -103,6 +103,11 @@ public class UltralightEngine {
             Constants.logger.error(e.getMessage());
         }
 
+        // Setup GLFW adapters
+        clipboardAdapter = new GlfwClipboardAdapter();
+        cursorAdapter = new GlfwCursorAdapter();
+        inputAdapter = new GlfwInputAdapter();
+
         // Setup platform
         Constants.logger.debug("Setting up ultralight platform");
         platform.lock(UltralightPlatform.instance());
@@ -116,7 +121,7 @@ public class UltralightEngine {
         );
         platform.get().usePlatformFontLoader();
         platform.get().setFileSystem(new BrowserFileSystem());
-        platform.get().setClipboard(new GlfwClipboardAdapter());
+        platform.get().setClipboard(clipboardAdapter);
         platform.get().setLogger((level, message) -> {
             switch (level) {
                 case ERROR -> Constants.logger.debug("[Ultralight/ERR] {}", message);
@@ -133,10 +138,7 @@ public class UltralightEngine {
         // Setup hooks
         EventManager.eventBus.register(new UltralightIntegrationHook());
 
-        // Setup GLFW adapters
-        clipboardAdapter = new GlfwClipboardAdapter();
-        cursorAdapter = new GlfwCursorAdapter();
-        inputAdapter = new GlfwInputAdapter();
+
 
         Constants.logger.info("Loading pages...");
         PageManager manager = new PageManager();

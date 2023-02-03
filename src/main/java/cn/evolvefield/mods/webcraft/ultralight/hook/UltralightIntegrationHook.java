@@ -21,7 +21,7 @@ public class UltralightIntegrationHook implements EventListener {
     }
 
     @Override
-    public void onScreenRender(Overlay screen, PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void onScreenRender(PoseStack matrices) {
         UltralightEngine.ENGINE.render(RenderLayer.SCREEN_LAYER, matrices);
     }
 

@@ -2,6 +2,7 @@ package cn.evolvefield.mods.webcraft.ultralight.listener;
 
 import cn.evolvefield.mods.webcraft.Constants;
 import cn.evolvefield.mods.webcraft.ultralight.View;
+import com.labymedia.ultralight.javascript.JavascriptContextLock;
 import com.labymedia.ultralight.plugin.loading.UltralightLoadListener;
 
 /**
@@ -34,8 +35,7 @@ public class ViewLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onBeginLoading(long frameId, boolean isMainFrame, String url) {
-        Constants.logger.debug("{}The view is about to load", frameName(frameId, isMainFrame, url));
-
+        Constants.logger.debug("{} The view is about to load", frameName(frameId, isMainFrame, url));
     }
 
     /**
@@ -47,7 +47,7 @@ public class ViewLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onFinishLoading(long frameId, boolean isMainFrame, String url) {
-        Constants.logger.debug("{}The view finished loading", frameName(frameId, isMainFrame, url));
+        Constants.logger.debug("{} The view finished loading", frameName(frameId, isMainFrame, url));
 
     }
 
@@ -63,7 +63,7 @@ public class ViewLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onFailLoading(long frameId, boolean isMainFrame, String url, String description, String errorDomain, int errorCode) {
-        Constants.logger.error("{}Failed to load {}, {}({})", frameName(frameId, isMainFrame, url), errorDomain, errorCode, description);
+        Constants.logger.error("{} Failed to load {}, {} ({})", frameName(frameId, isMainFrame, url), errorDomain, errorCode, description);
 
     }
 
@@ -88,9 +88,11 @@ public class ViewLoadListener implements UltralightLoadListener {
      */
     @Override
     public void onWindowObjectReady(long frameId, boolean isMainFrame, String url) {
-        var lock = view.ultralightView.get().lockJavascriptContext();
-        var context = lock.getContext();
-        view.context.setupContext(view, context);
+        try (JavascriptContextLock lock = view.ultralightView.get().lockJavascriptContext()){
+            var context = lock.getContext();
+            view.context.setupContext(view, context);
+
+        }
 
     }
 
